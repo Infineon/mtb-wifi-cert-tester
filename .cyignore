@@ -7,25 +7,19 @@ $(SEARCH_connectivity-utilities)/network/mbedos
 $(SEARCH_connectivity-utilities)/cy_worker_thread
 
 libs/command-console/TESTS
-../mtb_shared/command-console/latest-v2.X/source/iperf_utility
-../mtb_shared/command-console/latest-v2.X/source/iperf
+../mtb_shared/command-console/source/iperf_utility
+../mtb_shared/command-console/source/iperf
 libs/command-console/command_console/rtos/mbedos
 libs/command-console/bt_coex_utility
 
-$(SEARCH_middleware-lpa)/test/sut/test_console/mbedos
-$(SEARCH_middleware-lpa)/test/test_cases/mbedos
-$(SEARCH_middleware-lpa)/test/sut/test_console/afr
-$(SEARCH_middleware-lpa)/test/sut/api_test
-$(SEARCH_middleware-lpa)/test/sut/TCPKA
-$(SEARCH_middleware-lpa)/test/sut/sanity/mbedos
-$(SEARCH_middleware-lpa)/test/sut/test_console/freertos/mw-utilities.lib
-$(SEARCH_command-console)/latest-v2.X/source/TESTS
-$(SEARCH_command-console)/latest-v2.X/source/iperf_utility
-$(SEARCH_command-console)/latest-v2.X/source/wifi_utility
-$(SEARCH_command-console)/latest-v2.X/source/iperf
-$(SEARCH_command-console)/latest-v2.X/source/command_console/COMPONENT_AFR
-$(SEARCH_command-console)/latest-v2.X/source/command_console/COMPONENT_MBED
-$(SEARCH_command-console)/latest-v2.X/source/bluetooth_utility
+$(SEARCH_sigma-dut)/test/misra_coverity
+$(SEARCH_command-console)/source/TESTS
+$(SEARCH_command-console)/source/iperf_utility
+$(SEARCH_command-console)/source/wifi_utility
+$(SEARCH_command-console)/source/iperf
+$(SEARCH_command-console)/source/command_console/COMPONENT_AFR
+$(SEARCH_command-console)/source/command_console/COMPONENT_MBED
+$(SEARCH_command-console)/source/bluetooth_utility
 
 libs/lwip/contrib
 libs/lwip/test
@@ -34,7 +28,9 @@ libs/lwip/src/apps
 libs/lwip/src/netif/ppp
 
 $(SEARCH_lwip)/contrib
-$(SEARCH_lwip)/test
+$(SEARCH_lwip)/test/fuzz
+$(SEARCH_lwip)/test/unit
+$(SEARCH_lwip)/test/sockets
 $(SEARCH_lwip)/doc
 $(SEARCH_lwip)/src/apps
 $(SEARCH_lwip)src/netif/ppp
@@ -52,10 +48,14 @@ $(SEARCH_mbedtls)/programs
 $(SEARCH_mbedtls)/scripts
 $(SEARCH_mbedtls)/tests
 $(SEARCH_mbedtls)/doxygen
+$(SEARCH_mbedtls)/3rdparty
 $(SEARCH_mbedtls)/library/net_sockets.c
 $(SEARCH_wcm)/test/AllTests/main.c
 
+$(SEARCH_bluetooth-freertos)
+$(SEARCH_btstack)
 libs/wifi-host-driver/docs
 $(SEARCH_wifi-host-driver)/docs
+
 Debug
 Release

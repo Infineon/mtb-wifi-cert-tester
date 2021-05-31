@@ -7,7 +7,7 @@
 #
 ################################################################################
 # \copyright
-# Copyright 2018-2019 Cypress Semiconductor Corporation
+# Copyright 2021 Cypress Semiconductor Corporation (an Infineon company)
 # SPDX-License-Identifier: Apache-2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -67,19 +67,7 @@ VERBOSE=
 # ... then code in directories named COMPONENT_foo and COMPONENT_bar will be 
 # added to the build
 #
-COMPONENTS=FREERTOS PSOC6HAL LWIP MBEDTLS WCM SECURE_SOCKETS
-
-ifeq ($(TARGET),CY8CKIT-062S2-43012)
-COMPONENTS += 43012 CY8CMOD_062S2_43012 MBEDTLS
-endif
-
-ifeq ($(TARGET),CY8CKIT-062-WIFI-BT)
-COMPONENTS += 4343W CY8CKIT_062_WIFI_BT MBEDTLS
-endif
-
-ifeq ($(TARGET),CY8CPROTO-062-4343W)
-COMPONENTS += 4343W CY8CPROTO_062_4343W MBEDTLS
-endif
+COMPONENTS=FREERTOS LWIP MBEDTLS WCM SECURE_SOCKETS
 
 # Like COMPONENTS, but disable optional code that was enabled by default.
 DISABLE_COMPONENTS=
@@ -103,6 +91,14 @@ DEFINES=$(MBEDTLSFLAGS) CYBSP_WIFI_CAPABLE CY_RTOS_AWARE CY_RETARGET_IO_CONVERT_
 BUILD_TIME := "Timestamp_$(shell date +%Y-%m-%dT%H:%M:%S%z)"
 $(info Build Time : $(BUILD_TIME))
 DEFINES+=BUILD_TIME_STAMP=$(BUILD_TIME)
+
+# WiFi Cert Tester Version
+file := version.txt
+WIFI_CERT_VERSION_STRING :=  $(shell cat ${file})
+DEFINES+=WIFI_CERT_VER=$(WIFI_CERT_VERSION_STRING)
+
+# Microsoft supplicant Client, RootCA Certificates and Private Key
+#DEFINES+=MICROSOFT_SUPPLICANT_SERVER
 
 # Disable WHD logging
 DEFINES+=WHD_PRINT_DISABLE
@@ -172,7 +168,7 @@ CY_APP_PATH=
 #
 # The default depends on the selected TOOLCHAIN (GCC_ARM uses the ModusToolbox
 # IDE provided compiler by default).
-CY_COMPILER_PATH=
+CY_COMPILER_PATH ?=
 
 CY_GETLIBS_SHARED_PATH=../
 CY_GETLIBS_SHARED_NAME=mtb_shared
