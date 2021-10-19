@@ -51,6 +51,8 @@
  */
 //#undef MBEDTLS_HAVE_TIME_DATE
 
+/* Disable Check for key usage */
+#undef MBEDTLS_X509_CHECK_KEY_USAGE
 
 /**
  * \def MBEDTLS_PLATFORM_EXIT_ALT

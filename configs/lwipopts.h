@@ -79,6 +79,8 @@
 //
 #define MEM_LIBC_MALLOC                 (1)
 
+#define LWIP_CHKSUM_ALGORITHM           (3)
+
 //
 // The standard library does not provide errno, use the one
 // from LWIP.
@@ -122,27 +124,33 @@
 // The amount of space to leave before the packet when allocating a pbuf. Needs to
 // be enough for the link layer data and the WHD header
 //
+
+/* Set the payload size properly as netif->mtu is WHD_LINK_MTU(1500)
+ * which is WHD_PHYSICAL_HEADER + WHD_PAYLOAD_MTU
+ */
 #undef  WHD_PAYLOAD_MTU
-#define WHD_PAYLOAD_MTU                 ( 1048)
+#define WHD_PAYLOAD_MTU                 (1500 - WHD_PHYSICAL_HEADER)
+
+
 #define PBUF_LINK_HLEN                  (WHD_PHYSICAL_HEADER)
 
 //
 // TCP Maximum segment size
 //
-#define TCP_MSS                         (1000)
+#define TCP_MSS                         (WHD_PAYLOAD_MTU)
 
 #define     LWIP_CHECKSUM_CTRL_PER_NETIF   1
 #define     CHECKSUM_GEN_IP   1
-#define     CHECKSUM_GEN_UDP   1
+#define     CHECKSUM_GEN_UDP   0
 #define     CHECKSUM_GEN_TCP   1
 #define     CHECKSUM_GEN_ICMP   1
 #define     CHECKSUM_GEN_ICMP6   1
 #define     CHECKSUM_CHECK_IP   1
-#define     CHECKSUM_CHECK_UDP   1
+#define     CHECKSUM_CHECK_UDP   0
 #define     CHECKSUM_CHECK_TCP   1
 #define     CHECKSUM_CHECK_ICMP   1
 #define     CHECKSUM_CHECK_ICMP6   1
-#define     LWIP_CHECKSUM_ON_COPY   1
+#define     LWIP_CHECKSUM_ON_COPY   0
 
 //
 // Enable the thread safe NETCONN interface layer
@@ -171,24 +179,20 @@
 // Light weight protection for things that may be clobbered by interrupts
 //
 #define SYS_LIGHTWEIGHT_PROT            (1)
-#define LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT      (1)
+#define LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT      (0)
 
 #define LWIP_SO_RCVBUF                  (1)
 #define ARP_MAXAGE                      30000
 
-/* The MEM_SIZE should be multiple of 1024 to avoid SDMA errors */
-#define MEM_SIZE                        524288
-
-
 
 #define LWIP_SOCKET                     (1)
 #define LWIP_NETCONN                    (1)
-#define DEFAULT_TCP_RECVMBOX_SIZE       (16)
-#define TCPIP_MBOX_SIZE                 (16)
+#define DEFAULT_TCP_RECVMBOX_SIZE       (20)
+#define TCPIP_MBOX_SIZE                 (20)
 #define TCPIP_THREAD_STACKSIZE          (4*1024)
 #define TCPIP_THREAD_PRIO               (CY_RTOS_PRIORITY_HIGH)
-#define DEFAULT_RAW_RECVMBOX_SIZE       (16)
-#define DEFAULT_UDP_RECVMBOX_SIZE       (16)
+#define DEFAULT_RAW_RECVMBOX_SIZE       (20)
+#define DEFAULT_UDP_RECVMBOX_SIZE       (20)
 #define DEFAULT_ACCEPTMBOX_SIZE         (16)
 
 /**
@@ -226,7 +230,7 @@
  */
 #define PBUF_POOL_SIZE                  64
 
-#define PBUF_POOL_BUFSIZE               WHD_PAYLOAD_MTU
+#define PBUF_POOL_BUFSIZE               (1800)
 
 /**
  * MEMP_NUM_NETBUF: the number of struct netbufs.
@@ -240,6 +244,15 @@
  */
 #define MEMP_NUM_NETCONN                16
 
+/**
+ * Optimized 32 bit MEMCPY when SDIO UHS optimization is enabled
+ */
+#ifdef SDIO_UHS_OPTIMIZATION
+#if defined(__GNUC__) && !(defined(__ICCARM__) || defined(__clang__) || defined(__CC_ARM))
+extern void optimized_wordsize_memcpy(void *dst, const void *src, size_t len);
+#define MEMCPY(dst,src,len)             optimized_wordsize_memcpy(dst,src,len)
+#endif
+#endif
 
 /* Turn off LWIP_STATS in Release build */
 #ifdef DEBUG
@@ -264,3 +277,10 @@
 #define LWIP_NETIF_REMOVE_CALLBACK    (1)
 
 extern void sys_check_core_locking() ;
+
+/* Maximum IP Ping Packet size is determined by MTU Size * Number of MAX PBUFS */
+#define IP_REASS_MAX_PBUFS              40
+
+/* Number of IP fragments to be collected before re-assembly */
+#define MEMP_NUM_TCPIP_MSG_INPKT        40
+

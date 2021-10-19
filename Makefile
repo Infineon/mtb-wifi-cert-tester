@@ -43,12 +43,6 @@ APPNAME=mtb-anycloud-wifi-cert-tester
 # See also: CY_COMPILER_PATH below
 TOOLCHAIN=GCC_ARM
 
-# Default build configuration. Options include:
-#
-# Debug   -- build with minimal optimizations, focus on debugging.
-# Release -- build with full optimizations
-CONFIG=Debug
-
 # If set to "true" or "1", display full command-lines when building.
 VERBOSE=
 
@@ -89,12 +83,11 @@ DEFINES=$(MBEDTLSFLAGS) CYBSP_WIFI_CAPABLE CY_RTOS_AWARE CY_RETARGET_IO_CONVERT_
 
 # Build timestamp
 BUILD_TIME := "Timestamp_$(shell date +%Y-%m-%dT%H:%M:%S%z)"
-$(info Build Time : $(BUILD_TIME))
 DEFINES+=BUILD_TIME_STAMP=$(BUILD_TIME)
 
 # WiFi Cert Tester Version
-file := version.txt
-WIFI_CERT_VERSION_STRING :=  $(shell cat ${file})
+file := version.xml
+WIFI_CERT_VERSION_STRING :=  $(shell sed -e 's/<version>//g' -e 's/<\/version>//g'  ${file})
 DEFINES+=WIFI_CERT_VER=$(WIFI_CERT_VERSION_STRING)
 
 # Microsoft supplicant Client, RootCA Certificates and Private Key
@@ -102,6 +95,11 @@ DEFINES+=WIFI_CERT_VER=$(WIFI_CERT_VERSION_STRING)
 
 # Disable WHD logging
 DEFINES+=WHD_PRINT_DISABLE
+
+#
+# Define country to US  this will be set when
+# WHD driver is initialized
+DEFINES+=CY_WIFI_COUNTRY=WHD_COUNTRY_UNITED_STATES
 
 # Select softfp or hardfp floating point. Default is softfp. 
 VFP_SELECT=
@@ -150,6 +148,33 @@ ifeq ($(TOOLCHAIN),IAR)
 CY_IGNORE+=./libs/freertos/Source/portable/TOOLCHAIN_GCC_ARM
 else
 CY_IGNORE+=./libs/freertos/Source/portable/TOOLCHAIN_IAR
+endif
+
+#  Target specific flag for SDIO UHS supported mode
+#  this flag also includes optimization such as CPU Clock @150Mhz
+#  optimized word (32 bit) memcpy and release build
+#
+ifeq ($(TARGET), CY8CEVAL-062S2-LAI-4373M2)
+DEFINES += SDIO_UHS_OPTIMIZATION
+# Default build configuration. Options include:
+#
+# Debug   -- build with minimal optimizations, focus on debugging.
+# Release -- build with full optimizations
+CONFIG=Release
+else
+ifeq ($(TARGET), CY8CKIT-062S2-43012)
+# Default build configuration. Options include:
+#
+# Debug   -- build with minimal optimizations, focus on debugging.
+# Release -- build with full optimizations
+CONFIG=Release
+else
+# Default build configuration. Options include:
+#
+# Debug   -- build with minimal optimizations, focus on debugging.
+# Release -- build with full optimizations
+CONFIG=Debug
+endif
 endif
 
 ################################################################################

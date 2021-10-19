@@ -1,15 +1,41 @@
-# Wi-Fi Cert Tester tool for AnyCloud SDK
+# Wi-Fi Cert Tester tool for ModusToolbox SDK
 
-The Wi-Fi Cert Tester tool is used for Wi-Fi certification of 11n-PSK, 11n WPA2 Enterprise, PMF, WPA3, and 11ac. The Wi-Fi Cert Tester tool uses the command console asset to initialize and invoke the wifi-cert middleware init function.
+The Wi-Fi Cert Tester tool is used for Wi-Fi certification of 802.11n-PSK, WPA2 Enterprise security, PMF, WPA3 and 802.11ac.
 
-The tool waits for commands from the UCC Test Agent on a serial terminal (UART interface), executes the UCC test commands, and responds to the UCC Test Agent by sending the response in the serial console.
+This tool uses the command console asset to initialize and invoke the wifi-cert middleware init function.
+
+The tool accepts commands from the UCC Test Agent on a serial terminal (UART interface), executes the UCC test commands, and responds to the UCC Test Agent by sending the response in the serial console.
 
 Wi-Fi certification using the tool needs knowledge of the Wi-Fi Alliance test beds and associated software tools and hardware. Instructions in this document conform to the certification requirements of the Wi-Fi Alliance organization.
+
 See https://www.wi-fi.org/download.php?file=/sites/default/files/private/Certification_Overview_v5.2_0.pdf.
+
+
+## Throughput improvements
+
+The following changes are done to improve the throughput
+
+- Disable UDP Tx and UDP Rx checksum in lwipopts.h
+
+- Optimize MEMCPY by copying 4bytes size for GCC Compiler
+
+- Increase the CPU clock speed from 144Mhz to 150Mhz
+
+The other improvements done in ModusToolbox SDK 
+
+- Automatically select SDIO UHS-1 mode.
+
+
+## Other improvements recommended
+
+- Moving critical sections of Tx and Rx data path into RAM from FLASH
+
+- The above changes depend on the size of the applicaton and available RAM
+
 
 ## Requirements
 
-- [ModusToolbox™ software](https://www.cypress.com/products/modustoolbox-software-environment) v2.3
+- [ModusToolbox™ software](https://www.cypress.com/products/modustoolbox-software-environment) v2.4
 
 - Programming language: C
 
@@ -32,6 +58,8 @@ See https://www.wi-fi.org/download.php?file=/sites/default/files/private/Certifi
 - [PSoC&trade; 6 Wi-Fi Bluetooth&reg; prototyping kit](https://www.cypress.com/CY8CPROTO-062-4343W) (CY8CPROTO-062-4343W)
 
 - [PSoC&trade; 62S2 Wi-Fi Bluetooth&reg; pioneer kit](https://www.cypress.com/CY8CKIT-062S2-43012)  (CY8CKIT-062S2-43012)
+
+- [PSoC&trade; PSoC6 Development Kit](https://www.cypress.com/part/cy8ceval-062s2)(CY8CEVAL-062S2) + [Sterling LWB5Plus](https://www.mouser.com/new/laird-connectivity/laird-connectivity-sterling-lwb5plus) (CY8CEVAL-062S2-LAI-4373M2)
 
 
 ## Test setup
@@ -63,7 +91,7 @@ This tool requires a serial terminal such as Tera Term, PuTTY, or MiniCom to obs
 
 Open a serial terminal. On Linux and macOS, you can use any terminal application. On Windows, open the "modus-shell" app from the Start menu.
 
-1. Run the following command:
+1. Run the following command to clone the repo and get all the assets:
 
    ```
    git clone https://github.com/cypresssemiconductorco/mtb-anycloud-wifi-cert-tester
@@ -73,32 +101,47 @@ Open a serial terminal. On Linux and macOS, you can use any terminal application
    make getlibs
    ```
 
-### Build for Hostapd and Radiator supplicants
-
-1. Open the Makefile and comment out the following line:
-
-   ```
-   #DEFINES+=MICROSOFT_SUPPLICANT_SERVER
-   ```
-
-2. Run the following command:
+2. Run the following command to build and program:
 
    ```
    make program TARGET=CY8CKIT-062S2-43012 TOOLCHAIN=GCC_ARM
    ```
+   
+### Client Cert Setting for Hostapd and Radiator supplicant
 
-### Build for Microsoft supplicant
+Default Client certificate is set to Hostapd and Radiator supplicant
 
-1. Open the Makefile and uncomment the following line:
+
+### Client Cert Setting for Microsoft supplicant
+
+Open Minicom or putty:
+  
+   Set the Client certificate to Microsoft supplicant by executing  below command in minicom or putty
 
    ```
-   DEFINES+=MICROSOFT_SUPPLICANT_SERVER
+   clientcert,2
    ```
 
-2. Run the following command:
+   Get the Client certificate configuration
+   
+   ```
+   clientcert
+   ```
+   
+### Client Cert Setting for PMF Suite
+
+Open Minicom or putty:
+  
+   Set the Client certificate to PMF suite by executing  below command in minicom or putty
 
    ```
-   make program TARGET=CY8CKIT-062S2-43012 TOOLCHAIN=GCC_ARM
+   clientcert,3
+   ```
+
+   Get the Client certificate configuration
+   
+   ```
+   clientcert
    ```
 
 ## Operation

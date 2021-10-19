@@ -44,6 +44,10 @@
 #include "command_console.h"
 #include "wifi_app_intf.h"
 
+#if defined(__GNUC__) && !(defined(__ICCARM__) || defined(__clang__) || defined(__CC_ARM))
+void optimized_wordsize_memcpy(void *dst, const void *src, size_t len);
+#endif
+
 /*******************************************************************************
 * Macros
 ********************************************************************************/
@@ -53,11 +57,16 @@
 #define CONSOLE_COMMAND_MAX_PARAMS     (32)
 #define CONSOLE_COMMAND_MAX_LENGTH     (256)
 #define CONSOLE_COMMAND_HISTORY_LENGTH (10)
+#define CONSOLE_THREAD_PRIORITY        (5)
 
 /*
  * CPU CLOCK FREQUENCY
  */
+#ifdef SDIO_UHS_OPTIMIZATION
+#define CPU_CLOCK_FREQUENCY 150000000
+#else
 #define CPU_CLOCK_FREQUENCY 144000000
+#endif
 
 /* Peripheral clock dividier */
 #define CPU_PERI_CLOCK_DIV (2)
@@ -82,9 +91,19 @@ extern cyhal_uart_t cy_retarget_io_uart_obj;
 
 /* This enables RTOS aware debugging */
 volatile int uxTopUsedPriority ;
+#if defined(__GNUC__) && !(defined(__ICCARM__) || defined(__clang__) || defined(__CC_ARM))
+extern volatile uint32_t __HeapBase;
+extern volatile uint32_t __HeapLimit;
+uint8_t* base = (uint8_t *)&__HeapBase;
+uint8_t* end  = (uint8_t *)&__HeapLimit;
+#endif
 
 /* set CPU clock frequency */
+#if (CYHAL_API_VERSION >= 2)
+cy_rslt_t set_cpu_clock_v2 ( uint32_t freq );
+#else // HAL API version 1
 cy_rslt_t set_cpu_clock ( uint32_t freq );
+#endif
 
 /*
  * This is called first after the initialization of FreeRTOS.  It basically connects to WiFi and then starts the
@@ -102,7 +121,7 @@ void vApplicationDaemonTaskStartupHook()
     console_cfg.history_buffer_ptr = command_history_buffer;
     console_cfg.delimiter_string   = console_delimiter_string;
     console_cfg.params_num         = CONSOLE_COMMAND_MAX_PARAMS;
-    console_cfg.thread_priority    = CY_RTOS_PRIORITY_NORMAL;
+    console_cfg.thread_priority    = (cy_thread_priority_t)CONSOLE_THREAD_PRIORITY;
 
     /* Initialize command console library */
     result = cy_command_console_init(&console_cfg);
@@ -112,11 +131,21 @@ void vApplicationDaemonTaskStartupHook()
 
     if ( result != CY_RSLT_SUCCESS )
     {
-        printf("Sigma Init failed res:%ld\n", result );
+        printf("Sigma Init failed res:%u\n", (unsigned int)result );
     }
-    printf("CY_SRAM_SIZE     : %ld\n", CY_SRAM_SIZE);
+    printf("CY_SRAM_SIZE     : %lu\n", CY_SRAM_SIZE);
+#if defined(__GNUC__) && !(defined(__ICCARM__) || defined(__clang__) || defined(__CC_ARM))
+    printf("Heap Base        : %p\n", base);
+    printf("Heap size        : %d\n", (end - base));
+#else
     printf("Heap size        : %d\n", configTOTAL_HEAP_SIZE);
-    printf("SystemCoreClock  : %ld\n", SystemCoreClock);
+#endif
+    printf("SystemCoreClock  : %u\n", (unsigned int)SystemCoreClock);
+#ifdef SDIO_UHS_OPTIMIZATION
+    printf("UHS optimization : %s\n", "enabled");
+#else
+    printf("UHS optimization : %s\n", "disabled");
+#endif
 }
 
 /************************************************************************************
@@ -136,9 +165,19 @@ int main()
     /* Enable global interrupts */
     __enable_irq();
 
+    /* Enable High Speed CPU clock change to 144Mhz/150Mhz only for PSOC62M devices
+     * and use the default CPU clock for PSOC6 1M devices
+     */
+#if !defined(CYHAL_UDB_SDIO)
+#if (CYHAL_API_VERSION >= 2)
+    /* set CPU clock to CPU_CLOCK_FREQUENCY */
+    result = set_cpu_clock_v2(CPU_CLOCK_FREQUENCY);
+#else
     /* set CPU clock to CPU_CLOCK_FREQUENCY */
     result = set_cpu_clock(CPU_CLOCK_FREQUENCY);
+#endif
     CY_ASSERT(result == CY_RSLT_SUCCESS) ;
+#endif
 
     /* Initialize retarget-io to use the debug UART port */
     cy_retarget_io_init(CYBSP_DEBUG_UART_TX, CYBSP_DEBUG_UART_RX, CY_RETARGET_IO_BAUDRATE);
@@ -151,8 +190,46 @@ int main()
 
     /* Should never get here */
     CY_ASSERT(0) ;
+
+    return result;
 }
 
+#if (CYHAL_API_VERSION >= 2)
+cy_rslt_t set_cpu_clock_v2 ( uint32_t freq )
+{
+    cy_rslt_t ret = CY_RSLT_SUCCESS;
+    uint32_t old_freq;
+    cyhal_clock_t clock_pll, clock_hf0 , clock_peri;
+
+    old_freq = cyhal_clock_get_frequency(&CYHAL_CLOCK_HF[0]);
+    if ( freq != old_freq )
+    {
+        /* Initialize, take ownership of, the PLL instance */
+        CHECK_SIGMA_APP_RETURN(cyhal_clock_reserve(&clock_pll, &CYHAL_CLOCK_PLL[0]));
+
+        /* Set CPU clock to freq */
+        CHECK_SIGMA_APP_RETURN(cyhal_clock_set_frequency(&clock_pll, freq, NULL));
+
+        /* If the PLL is not already enabled, enable it */
+        if (!cyhal_clock_is_enabled(&clock_pll))
+        {
+            CHECK_SIGMA_APP_RETURN(cyhal_clock_set_enabled(&clock_pll, true, true));
+        }
+        /* Initialize, take ownership of, the PERI instance */
+        CHECK_SIGMA_APP_RETURN(cyhal_clock_reserve(&clock_peri, &CYHAL_CLOCK_PERI));
+
+        /* Initialize, take ownership of, the HF0 instance */
+        CHECK_SIGMA_APP_RETURN(cyhal_clock_reserve(&clock_hf0, &CYHAL_CLOCK_HF[0]));
+
+        /* Set peri clock divider */
+        CHECK_SIGMA_APP_RETURN(cyhal_clock_set_divider(&clock_peri, CPU_PERI_CLOCK_DIV));
+
+        /* set HF0 Clock source to PLL */
+        CHECK_SIGMA_APP_RETURN(cyhal_clock_set_source(&clock_hf0, &clock_pll));
+    }
+    return ret;
+}
+#else // HAL API version 1
 cy_rslt_t set_cpu_clock ( uint32_t freq )
 {
     cy_rslt_t ret = CY_RSLT_SUCCESS;
@@ -195,3 +272,35 @@ cy_rslt_t set_cpu_clock ( uint32_t freq )
     }
     return ret;
 }
+#endif
+
+#if defined(__GNUC__) && !(defined(__ICCARM__) || defined(__clang__) || defined(__CC_ARM))
+void optimized_wordsize_memcpy(void *dst, const void *src, size_t len)
+{
+    volatile unsigned int *pdest1 = (unsigned int *)dst;
+    volatile unsigned int *psrc1  = (unsigned int*)src;
+    volatile unsigned char *psrc;
+    volatile unsigned char *pdest;
+    int index;
+
+    if ( (len != 0 ) && ( len > 4 ))
+    {
+        do
+        {
+            *pdest1 = *psrc1;
+            pdest1++;
+            psrc1++;
+            len -= 4;
+        } while ( len >= 4 );
+   }
+   psrc  = (unsigned char *)psrc1;
+   pdest = (unsigned char *)pdest1;
+
+   for ( index = 0; index < len; index++)
+   {
+       *pdest = *psrc;
+       pdest++;
+       psrc++;
+   }
+}
+#endif
