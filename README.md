@@ -1,6 +1,6 @@
 # Wi-Fi Cert Tester tool for ModusToolbox SDK
 
-The Wi-Fi Cert Tester tool is used for Wi-Fi certification of 802.11n-PSK, WPA2 Enterprise security, PMF, WPA3 and 802.11ac.
+The Wi-Fi Cert Tester tool is used for Wi-Fi certification of 802.11n-PSK, WPA2 Enterprise security, PMF, 802.11ac, WPA3 and WPA3-R3(Personal) support for CY8CEVAL-062S2-MUR-43439M2 and CY8CEVAL-062S2-LAI-4373M2
 
 This tool uses the command console asset to initialize and invoke the wifi-cert middleware init function.
 
@@ -60,6 +60,8 @@ The other improvements done in ModusToolbox SDK
 - [PSoC&trade; 62S2 Wi-Fi Bluetooth&reg; pioneer kit](https://www.cypress.com/CY8CKIT-062S2-43012)  (CY8CKIT-062S2-43012)
 
 - [PSoC&trade; PSoC6 Development Kit](https://www.cypress.com/part/cy8ceval-062s2)(CY8CEVAL-062S2) + [Sterling LWB5Plus](https://www.mouser.com/new/laird-connectivity/laird-connectivity-sterling-lwb5plus) (CY8CEVAL-062S2-LAI-4373M2)
+
+- [PSoC&trade; PSoC6 Development Kit](https://www.cypress.com/part/cy8ceval-062s2)(CY8CEVAL-062S2) + [1YN M.2 Module](https://www.embeddedartists.com/products/1yn-m-2-module) (CY8CEVAL-062S2-MUR-43439M2)
 
 
 ## Test setup
