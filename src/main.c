@@ -1,5 +1,5 @@
 /*
- * Copyright 2021, Cypress Semiconductor Corporation (an Infineon company) or
+ * Copyright 2022, Cypress Semiconductor Corporation (an Infineon company) or
  * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
  *
  * This software, including source code, documentation and related
@@ -37,7 +37,6 @@
 #include <lwip/api.h>
 #include <cy_retarget_io.h>
 #include <cybsp_wifi.h>
-#include <cy_lwip.h>
 #include <FreeRTOS.h>
 #include <task.h>
 #include <stdio.h>
@@ -146,6 +145,7 @@ void vApplicationDaemonTaskStartupHook()
 #else
     printf("UHS optimization : %s\n", "disabled");
 #endif
+
 }
 
 /************************************************************************************

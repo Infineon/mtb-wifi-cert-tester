@@ -1,6 +1,6 @@
 # Wi-Fi Cert Tester tool for ModusToolbox SDK
 
-The Wi-Fi Cert Tester tool is used for Wi-Fi certification of 802.11n-PSK, WPA2 Enterprise security, PMF, 802.11ac, WPA3 and WPA3-R3(Personal) support for CY8CEVAL-062S2-MUR-43439M2 and CY8CEVAL-062S2-LAI-4373M2
+The Wi-Fi Cert Tester tool is used for Wi-Fi certification of 802.11n-PSK, WPA2 Enterprise security, PMF, 802.11ac, WPA3 and WPA3-R3(Personal) support for CY8CEVAL-062S2-MUR-43439M2, CY8CEVAL-062S2-LAI-4373M2 and CY8CKIT-062S2-43012.
 
 This tool uses the command console asset to initialize and invoke the wifi-cert middleware init function.
 

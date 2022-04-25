@@ -168,6 +168,7 @@ ifeq ($(TARGET), CY8CKIT-062S2-43012)
 # Debug   -- build with minimal optimizations, focus on debugging.
 # Release -- build with full optimizations
 CONFIG=Release
+#DEFINES+= WPA3_UNIT_TEST_ENABLED
 else
 ifeq ($(TARGET), CY8CEVAL-062S2-MUR-43439M2)
 # Default build configuration. Options include:
