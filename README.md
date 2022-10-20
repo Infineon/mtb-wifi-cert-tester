@@ -108,43 +108,6 @@ Open a serial terminal. On Linux and macOS, you can use any terminal application
    ```
    make program TARGET=CY8CKIT-062S2-43012 TOOLCHAIN=GCC_ARM
    ```
-   
-### Client Cert Setting for Hostapd and Radiator supplicant
-
-Default Client certificate is set to Hostapd and Radiator supplicant
-
-
-### Client Cert Setting for Microsoft supplicant
-
-Open Minicom or putty:
-  
-   Set the Client certificate to Microsoft supplicant by executing  below command in minicom or putty
-
-   ```
-   clientcert,2
-   ```
-
-   Get the Client certificate configuration
-   
-   ```
-   clientcert
-   ```
-   
-### Client Cert Setting for PMF Suite
-
-Open Minicom or putty:
-  
-   Set the Client certificate to PMF suite by executing  below command in minicom or putty
-
-   ```
-   clientcert,3
-   ```
-
-   Get the Client certificate configuration
-   
-   ```
-   clientcert
-   ```
 
 ## Operation
 

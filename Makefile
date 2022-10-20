@@ -30,6 +30,9 @@
 
 # Target board/hardware
 TARGET=CY8CKIT-062S2-43012
+#TARGET=CY8CEVAL-062S2-LAI-4373M2
+#TARGET=CY8CEVAL-062S2-MUR-43439M2
+#TARGET=CY8CPROTO-062-4343W
 
 # Name of application (used to derive name of final linked file).
 APPNAME=mtb-anycloud-wifi-cert-tester
@@ -61,10 +64,10 @@ VERBOSE=
 # ... then code in directories named COMPONENT_foo and COMPONENT_bar will be 
 # added to the build
 #
-COMPONENTS=FREERTOS LWIP MBEDTLS WCM SECURE_SOCKETS
+COMPONENTS=FREERTOS LWIP MBEDTLS WCM SECURE_SOCKETS PSOC6HAL
 
 # Like COMPONENTS, but disable optional code that was enabled by default.
-DISABLE_COMPONENTS=
+DISABLE_COMPONENTS=HCI-UART
 
 # By default the build system automatically looks in the Makefile's directory
 # tree for source code and builds it. The SOURCES variable can be used to
@@ -74,12 +77,14 @@ SOURCES=
 
 # Like SOURCES, but for include directories. Value should be paths to
 # directories (without a leading -I).
-INCLUDES=
+INCLUDES=./configs
 
 MBEDTLSFLAGS = MBEDTLS_USER_CONFIG_FILE='"configs/mbedtls_user_config.h"'
 
 # Add additional defines to the build process (without a leading -D).
 DEFINES=$(MBEDTLSFLAGS) CYBSP_WIFI_CAPABLE CY_RTOS_AWARE CY_RETARGET_IO_CONVERT_LF_TO_CRLF TARGET_NAME=$(TARGET)
+
+MTB_TYPE=COMBINED
 
 # Build timestamp
 BUILD_TIME := "Timestamp_$(shell date +%Y-%m-%dT%H:%M:%S%z)"

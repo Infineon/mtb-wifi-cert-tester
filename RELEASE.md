@@ -5,6 +5,9 @@ See the [README.md](./README.md) for a complete description of the WiFi Cert Tes
 
 ## Changelog
 
+### v4.0.0
+* Add dependency on wifi-core-freertos-lwip-mbedtls to pull wifi-connection-manager release-v3.0.0
+
 ### v3.4.0
 * Added support for WPA3 External Supplicant for CY8CKIT-062S2-43012
 
@@ -32,9 +35,9 @@ This version of the library was validated for compatibility with the following S
 
 | Software and Tools                                      | Version |
 | :---                                                    | :----:  |
-| ModusToolbox Software Environment                       | 2.4.0   |
+| ModusToolbox Software Environment                       | 3.0.0   |
 | - ModusToolbox Device Configurator                      | 3.10.0  |
-| PSoC 6 Peripheral Driver Library (PDL)                  | 2.3.0   |
-| GCC Compiler                                            | 9.3.1   |
+| PSoC 6 Peripheral Driver Library (PDL)                  | 2.4.0   |
+| GCC Compiler                                            | 10.3.1  |
 | IAR Compiler                                            | 8.42    |
 | ARMC6 Compiler                                          | 6.14    |
