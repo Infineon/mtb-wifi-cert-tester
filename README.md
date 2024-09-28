@@ -1,6 +1,6 @@
 # Wi-Fi Cert Tester tool for ModusToolbox SDK
 
-The Wi-Fi Cert Tester tool is used for Wi-Fi certification of 802.11n-PSK, WPA2 Enterprise security, PMF, 802.11ac, WPA3 and WPA3-R3(Personal) support for CY8CEVAL-062S2-MUR-43439M2, CY8CEVAL-062S2-LAI-4373M2 and CY8CKIT-062S2-43012.
+The Wi-Fi Cert Tester tool is used for Wi-Fi certification of 802.11n-PSK, WPA2 Enterprise security, PMF, 802.11ac, WPA3 and WPA3-R3(Personal).
 
 This tool uses the command console asset to initialize and invoke the wifi-cert middleware init function.
 
@@ -35,33 +35,43 @@ The other improvements done in ModusToolbox SDK
 
 ## Requirements
 
-- [ModusToolbox™ software](https://www.cypress.com/products/modustoolbox-software-environment) v2.4
+- [ModusToolbox&trade; software](https://www.infineon.com/cms/en/design-support/tools/sdk/modustoolbox-software/)
 
 - Programming language: C
 
-- Associated parts: All [PSoC&trade; 6 MCU](http://www.cypress.com/PSoC6) parts
+- Associated parts: All [PSoC&trade; 6 MCU](https://www.infineon.com/cms/en/product/microcontroller/32-bit-psoc-arm-cortex-microcontroller/psoc-6-32-bit-arm-cortex-m4-mcu/) parts
 
 
 ## Dependent assets
 
-- [Wi-Fi connection manager](https://github.com/cypresssemiconductorco/wifi-connection-manager)
+- [Wi-Fi connection manager](https://github.com/Infineon/wifi-connection-manager)
 
-- [Command console](https://github.com/cypresssemiconductorco/command-console)
+- [Command console](https://github.com/Infineon/command-console)
 
-- [Wi-Fi Cert library](https://github.com/cypresssemiconductorco/wifi-cert)
+- [Wi-Fi Cert library](https://github.com/Infineon/wifi-cert)
 
-- [Enterprise security](https://github.com/cypresssemiconductorco/enterprise-security)
+- [Enterprise security](https://github.com/Infineon/enterprise-security)
 
 
 ## Supported kits
 
-- [PSoC&trade; 6 Wi-Fi Bluetooth&reg; prototyping kit](https://www.cypress.com/CY8CPROTO-062-4343W) (CY8CPROTO-062-4343W)
+- [PSoC&trade; 62S2 Wi-Fi Bluetooth&reg; pioneer kit (CY8CKIT-062S2-43012) - Default target](https://www.infineon.com/cms/en/product/evaluation-boards/cy8ckit-062s2-43012/)
 
-- [PSoC&trade; 62S2 Wi-Fi Bluetooth&reg; pioneer kit](https://www.cypress.com/CY8CKIT-062S2-43012)  (CY8CKIT-062S2-43012)
+- [PSoC&trade; 6 Wi-Fi Bluetooth&reg; prototyping kit (CY8CPROTO-062-4343W)](https://www.infineon.com/cms/en/product/evaluation-boards/cy8cproto-062-4343w/)
 
-- [PSoC&trade; PSoC6 Development Kit](https://www.cypress.com/part/cy8ceval-062s2)(CY8CEVAL-062S2) + [Sterling LWB5Plus](https://www.mouser.com/new/laird-connectivity/laird-connectivity-sterling-lwb5plus) (CY8CEVAL-062S2-LAI-4373M2)
+- [PSoC&trade; 62S2 Wi-Fi Bluetooth&reg; prototyping kit (CY8CPROTO-062S2-43439)](https://www.infineon.com/cms/en/product/evaluation-boards/cy8cproto-062s2-43439/)
 
-- [PSoC&trade; PSoC6 Development Kit](https://www.cypress.com/part/cy8ceval-062s2)(CY8CEVAL-062S2) + [1YN M.2 Module](https://www.embeddedartists.com/products/1yn-m-2-module) (CY8CEVAL-062S2-MUR-43439M2)
+- [PSoC&trade; 62S2 evaluation kit (CY8CEVAL-062S2-LAI-43439M2)](https://www.infineon.com/cms/en/product/evaluation-boards/cy8ceval-062s2/)
+
+- [PSoC&trade; 62S2 evaluation kit (CY8CEVAL-062S2-MUR-43439M2)](https://www.infineon.com/cms/en/product/evaluation-boards/cy8ceval-062s2/)
+
+- [PSoC&trade; 62S2 evaluation kit (CY8CEVAL-062S2-LAI-4373M2)](https://www.infineon.com/cms/en/product/evaluation-boards/cy8ceval-062s2/)
+
+- [PSoC&trade; 62S2 evaluation kit (CY8CEVAL-062S2-MUR-4373M2)](https://www.infineon.com/cms/en/product/evaluation-boards/cy8ceval-062s2/)
+
+- [PSoC&trade; 62S2 evaluation kit (CY8CEVAL-062S2-MUR-4373EM2)](https://www.infineon.com/cms/en/product/evaluation-boards/cy8ceval-062s2/)
+
+- [PSoC&trade; 62S2 evaluation kit (CY8CEVAL-062S2-CYW43022CUB)](https://www.infineon.com/cms/en/product/evaluation-boards/cy8ceval-062s2/)
 
 
 ## Test setup
@@ -96,9 +106,9 @@ Open a serial terminal. On Linux and macOS, you can use any terminal application
 1. Run the following command to clone the repo and get all the assets:
 
    ```
-   git clone https://github.com/cypresssemiconductorco/mtb-anycloud-wifi-cert-tester
+   git clone https://github.com/Infineon/mtb-wifi-cert-tester
 
-   cd mtb-anycloud-wifi-cert-tester
+   cd mtb-wifi-cert-tester
 
    make getlibs
    ```
@@ -111,7 +121,7 @@ Open a serial terminal. On Linux and macOS, you can use any terminal application
 
 ## Operation
 
-1. Copy the *../mtb_shared/wifi-cert/latest-v3.X/scripts*  folder into the DUT Control Agent PC.
+1. Copy the *../mtb_shared/wifi-cert/latest-v4.X/scripts*  folder into the DUT Control Agent PC.
 
 2. Open the *init_dut_ca.sh* file and locate the following line:
 

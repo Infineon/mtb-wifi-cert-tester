@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, Cypress Semiconductor Corporation (an Infineon company) or
+ * Copyright 2024, Cypress Semiconductor Corporation (an Infineon company) or
  * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
  *
  * This software, including source code, documentation and related
@@ -54,7 +54,7 @@ void optimized_wordsize_memcpy(void *dst, const void *src, size_t len);
  * Command console buffers
  */
 #define CONSOLE_COMMAND_MAX_PARAMS     (32)
-#define CONSOLE_COMMAND_MAX_LENGTH     (256)
+#define CONSOLE_COMMAND_MAX_LENGTH     (1024)
 #define CONSOLE_COMMAND_HISTORY_LENGTH (10)
 #define CONSOLE_THREAD_PRIORITY        (5)
 
@@ -97,13 +97,14 @@ uint8_t* base = (uint8_t *)&__HeapBase;
 uint8_t* end  = (uint8_t *)&__HeapLimit;
 #endif
 
+#ifndef COMPONENT_4390X
 /* set CPU clock frequency */
 #if (CYHAL_API_VERSION >= 2)
 cy_rslt_t set_cpu_clock_v2 ( uint32_t freq );
 #else // HAL API version 1
 cy_rslt_t set_cpu_clock ( uint32_t freq );
 #endif
-
+#endif
 /*
  * This is called first after the initialization of FreeRTOS.  It basically connects to WiFi and then starts the
  * task that waits for DHCP.  No tasks will actually run until this function returns.
@@ -132,14 +133,17 @@ void vApplicationDaemonTaskStartupHook()
     {
         printf("Sigma Init failed res:%u\n", (unsigned int)result );
     }
+#ifndef COMPONENT_4390X
     printf("CY_SRAM_SIZE     : %lu\n", CY_SRAM_SIZE);
+#endif
 #if defined(__GNUC__) && !(defined(__ICCARM__) || defined(__clang__) || defined(__CC_ARM))
     printf("Heap Base        : %p\n", base);
     printf("Heap size        : %d\n", (end - base));
 #else
     printf("Heap size        : %d\n", configTOTAL_HEAP_SIZE);
 #endif
-    printf("SystemCoreClock  : %u\n", (unsigned int)SystemCoreClock);
+    printf("SystemCoreClock  : %u\n", (unsigned int)configCPU_CLOCK_HZ);
+
 #ifdef SDIO_UHS_OPTIMIZATION
     printf("UHS optimization : %s\n", "enabled");
 #else
@@ -168,6 +172,7 @@ int main()
     /* Enable High Speed CPU clock change to 144Mhz/150Mhz only for PSOC62M devices
      * and use the default CPU clock for PSOC6 1M devices
      */
+#ifndef COMPONENT_4390X
 #if !defined(CYHAL_UDB_SDIO)
 #if (CYHAL_API_VERSION >= 2)
     /* set CPU clock to CPU_CLOCK_FREQUENCY */
@@ -177,6 +182,7 @@ int main()
     result = set_cpu_clock(CPU_CLOCK_FREQUENCY);
 #endif
     CY_ASSERT(result == CY_RSLT_SUCCESS) ;
+#endif
 #endif
 
     /* Initialize retarget-io to use the debug UART port */
@@ -193,7 +199,7 @@ int main()
 
     return result;
 }
-
+#ifndef COMPONENT_4390X
 #if (CYHAL_API_VERSION >= 2)
 cy_rslt_t set_cpu_clock_v2 ( uint32_t freq )
 {
@@ -272,6 +278,7 @@ cy_rslt_t set_cpu_clock ( uint32_t freq )
     }
     return ret;
 }
+#endif
 #endif
 
 #if defined(__GNUC__) && !(defined(__ICCARM__) || defined(__clang__) || defined(__CC_ARM))

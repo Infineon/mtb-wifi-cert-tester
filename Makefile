@@ -35,7 +35,7 @@ TARGET=CY8CKIT-062S2-43012
 #TARGET=CY8CPROTO-062-4343W
 
 # Name of application (used to derive name of final linked file).
-APPNAME=mtb-anycloud-wifi-cert-tester
+APPNAME=mtb-wifi-cert-tester
 
 # Name of toolchain to use. Options include:
 #

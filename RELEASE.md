@@ -5,6 +5,10 @@ See the [README.md](./README.md) for a complete description of the WiFi Cert Tes
 
 ## Changelog
 
+### v4.1.0
+* Enlarge CAPI command length up to 1024 for supporting WPA3 192bit
+* Added support for CYW943907AEVAL1F kit
+
 ### v4.0.0
 * Add dependency on wifi-core-freertos-lwip-mbedtls to pull wifi-connection-manager release-v3.0.0
 
